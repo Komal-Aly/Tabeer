@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tabeer Foundation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f5f7;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(135deg, #00796b, #004d40);
+      color: white;
+      padding: 10px 30px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    header img {
+      height: 100px;
+      padding-right: 300px;
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      margin: 0;
+      text-align: center;
+    }
+    header h5{
+    margin: 0;
+    text-align: center;
+    }
+
+    .header{
+        display: block;
+        padding: 0%;
+    }
+    section {
+      padding: 30px 20px;
+      text-align: center;
+    }
+    ul{
+        text-align: left;
+        margin-left: 10px;
+    }
+    section h2 {
+      font-size: 2.2em;
+      color: #00796b;
+      margin-bottom: 20px;
+      position: relative;
+      margin-top: 0%;
+    }
+
+    section h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background-color: #00796b;
+      margin: 10px auto 30px;
+      border-radius: 5px;
+    }
+
+    section p {
+      font-size: 1.1em;
+      max-width: 850px;
+      margin: auto;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    /* Social and News scrolling containers */
+    .scroll-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    .scroll-wrapper {
+      display: flex;
+      gap: 20px;
+      scroll-behavior: smooth;
+      width: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 10px;
+
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+    }
+
+    .scroll-wrapper::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
+    .scroll-wrapper img {
+      flex: 0 0 calc(50% - 10px);
+      scroll-snap-align: start;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .scroll-wrapper img:hover {
+      transform: scale(1.05);
+    }
+
+    .scroll-container .scroll-btn {
+      background-color: rgba(0, 0, 0, 0.3);
+      color: white;
+      border: none;
+      font-size: 30px;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      z-index: 10;
+    }
+
+    .scroll-container .scroll-btn:hover {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .scroll-btn.left {
+      left: 10px;
+    }
+
+    .scroll-btn.right {
+      right: 10px;
+    }
+
+    footer {
+      background-color: #00332d;
+      color: #e0f2f1;
+      padding: 30px;
+      text-align: center;
+      font-size: 0.95em;
+    }
+
+    /* Lightbox Styles */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      animation: zoomIn 0.3s ease;
+    }
+
+    .close-btn, .nav-btn {
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.3s ease;
+      padding: 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.4);
+      border-radius: 50%;
+    }
+
+    .nav-left {
+      left: 20px;
+    }
+
+    .nav-right {
+      right: 20px;
+    }
+
+    .close-btn:hover, .nav-btn:hover {
+      color: #ccc;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      header img {
+        margin-bottom: 15px;
+      }
+
+      section {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  let currentIndex = 0;
+  let images = [];
+
+  function openLightbox(img, type) {
+    if (type === 'social') {
+      images = Array.from(document.querySelectorAll("#socialScroll img"));
+    } else if (type === 'news') {
+      images = Array.from(document.querySelectorAll("#newsScroll img"));
+    }
+
+    currentIndex = images.indexOf(img);
+    document.getElementById("lightbox-img").src = img.src;
+    document.getElementById("lightbox").style.display = "flex";
+    document.body.classList.add("modal-open");
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+    document.body.classList.remove("modal-open");
+  }
+
+  function navigateLightbox(direction) {
+    currentIndex = (currentIndex + direction + images.length) % images.length;
+    document.getElementById("lightbox-img").src = images[currentIndex].src;
+  }
+
+  document.getElementById("lightbox").addEventListener("click", function (e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    const isOpen = document.getElementById("lightbox").style.display === "flex";
+    if (isOpen) {
+      if (e.key === "ArrowRight") navigateLightbox(1);
+      if (e.key === "ArrowLeft") navigateLightbox(-1);
+      if (e.key === "Escape") closeLightbox();
+    }
+  });
+
+  function scrollSocial(direction) {
+    if (document.getElementById("lightbox").style.display === "flex") return;
+    const container = document.getElementById("socialScroll");
+    container.scrollBy({ left: direction * 300, behavior: "smooth" });
+  }
+
+  function scrollNews(direction) {
+    if (document.getElementById("lightbox").style.display === "flex") return;
+    const container = document.getElementById("newsScroll");
+    container.scrollBy({ left: direction * 300, behavior: "smooth" });
+  }
+</script>
+
+<!-- Header -->
+<header>
+  
+    <img src="logo.jpg" alt="Tabeer Foundation Logo">
+    <section class="header">
+    <h1>Tabeer Foundation</h1>
+  <h5>Building a Brighter Future Through Education & Empowerment</h5>
+  </section>
+</header>
+
+<!-- Mission -->
+<section id="mission">
+  <h2>Our Mission</h2>
+  <p>At Tabeer Foundation, we are dedicated to transforming lives by providing quality education, promoting human rights awareness, and empowering women and children in Pakistan. Our mission is to ensure that every child receives an education enriched with modern learning concepts, skill-based training, and a strong understanding of human and women’s rights.
+    
+    We believe that education is not just about literacy; it is about fostering critical thinking, creativity, and essential life skills that enable individuals to break free from the cycle of poverty. By integrating innovative teaching methods with real-world skill development, we prepare children for a future where they can thrive as independent, confident, and knowledgeable members of society.
+    
+    Alongside education, we work relentlessly to create awareness about human rights, combat child and women abuse, and support communities in building a culture of equality and justice. Through our initiatives, we strive to create a society where every woman is empowered to stand up for her rights, and every child is nurtured in a safe, progressive, and encouraging environment.
+<!-- Vision -->
+<section id="vision">
+  <h2>Our Vision</h2>
+  <p>Our vision is a Pakistan where:
+    <ul>
+        <li>Every child receives quality education based on modern learning techniques, critical thinking, and skill development.
+        </li>
+        <li>Skill-based learning empowers youth to become self-sufficient and economically independent.
+        </li>
+        <li>Human rights and women’s rights are understood, respected, and protected at every level of society.
+        </li>
+        <li>Women and children live free from abuse and discrimination, with the knowledge and confidence to stand up for themselves.
+        </li>
+        <li>Communities are equipped with the tools and knowledge to foster an environment of justice, equality, and empowerment.
+        </li>
+    </ul>
+     Tabeer Foundation envisions a future where education is the foundation of a progressive society—one that nurtures knowledge, protects human dignity, and empowers individuals to create positive change.</section>
+</section>
+
+<!-- Social Work Gallery -->
+<section id="social-work">
+  <h2>Social Work Gallery</h2>
+  <div class="scroll-container">
+    <button class="scroll-btn left" onclick="scrollSocial(-1)">&#10094;</button>
+    <div class="scroll-wrapper" id="socialScroll">
+      <img src="social (10).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (11).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (12).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (3).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (4).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (5).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (6).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (7).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (8).jpg" onclick="openLightbox(this, 'social')">
+      <img src="social (9).jpg" onclick="openLightbox(this, 'social')">
+    </div>
+    <button class="scroll-btn right" onclick="scrollSocial(1)">&#10095;</button>
+  </div>
+</section>
+
+<!-- In the News Gallery -->
+<section id="media">
+  <h2>In the News</h2>
+  <div class="scroll-container">
+    <button class="scroll-btn left" onclick="scrollNews(-1)">&#10094;</button>
+    <div class="scroll-wrapper" id="newsScroll">
+      <img src="news (1).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (2).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (3).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (4).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (5).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (6).jpg" onclick="openLightbox(this, 'news')">
+      <img src="news (7).jpg" onclick="openLightbox(this, 'news')">
+      </div>
+    <button class="scroll-btn right" onclick="scrollNews(1)">&#10095;</button>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox">
+  <span class="close-btn" onclick="closeLightbox()">&times;</span>
+  <img id="lightbox-img" src="" alt="Image">
+  <button class="nav-btn nav-left" onclick="navigateLightbox(-1)">&#10094;</button>
+  <button class="nav-btn nav-right" onclick="navigateLightbox(1)">&#10095;</button>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2025 Tabeer Foundation. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
